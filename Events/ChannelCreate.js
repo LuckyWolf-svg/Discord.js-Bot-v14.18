@@ -9,6 +9,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
             const guild = newState.guild;
             const newChannel = await guild.channels.create({
                 name: `${newState.member.user.username}`,
+                parent: 'YourCategoryID',
                 type: 2, });
             await newState.member.voice.setChannel(newChannel);
             userChannels[newState.member.user.id] = newChannel.id;
