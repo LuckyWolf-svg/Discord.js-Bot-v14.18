@@ -5,7 +5,7 @@ export function registerDeletechannel(client) {
 client.on(Events.VoiceStateUpdate, async (oldState) => {    
     const channel = oldState.channel;
     if (channel)
-    if (channel != 'ChannelToJoinForCreate' && channel.members.size === 0){
+    if (channel != 'ChannelToJoinForCreate' && channel.members.size === 0 && channel.parentId == 'YourCategoryForCreatingVoices'){
         try {
             setTimeout(async () => {
                 await channel.delete();
