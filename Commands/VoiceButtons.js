@@ -9,7 +9,7 @@ export function registerVoiceButton(client) {
             const member = message.member;
             if (member.voice.channel) {
                 const voiceChannel = member.voice.channel;
-                const targetTextChannel = message.guild.channels.cache.find(channel => channel.id === '1347586545388879872');
+                const targetTextChannel = message.guild.channels.cache.find(channel => channel.id === 'ChannelToJoinForCreate');
                 if (targetTextChannel) {
                     const buttonname = new ButtonBuilder()
                         .setCustomId('change_channel_name')
@@ -36,7 +36,7 @@ export function registerVoiceButton(client) {
                         content: `Вы находитесь в голосовом канале ${voiceChannel.name}. Нажмите на кнопку для изменения его названия.`,
                         components: [row] });
                 } else { await message.channel.send("Не удалось найти текстовый канал."); }
-            } else { await message.channel.send("Вы не находитесь в голосовом канале id:1346470718233120861");}
+            } else { await message.channel.send("Вы не находитесь в голосовом канале");}
         }
     });
     
