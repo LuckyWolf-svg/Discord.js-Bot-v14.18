@@ -4,7 +4,7 @@ export const userChannels = {};
 
 export function registerChannelButton(client) {
 client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
-    if (newState.channelId === '1347586545388879872') {
+    if (newState.channelId === 'ChannelToJoinForCreate') {
         if (newState.channelId && oldState.channelId !== newState.channelId) {
             const guild = newState.guild;
             const newChannel = await guild.channels.create({
