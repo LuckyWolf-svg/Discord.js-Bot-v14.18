@@ -1,4 +1,4 @@
-import { REST, Routes, EmbedBuilder, Client, ButtonStyle,ButtonBuilder, Events, GatewayIntentBits, BaseGuildVoiceChannel, ActionRowBuilder, StringSelectMenuBuilder, InteractionType, Embed, NewsChannel } from 'discord.js';
+import { REST, Routes, EmbedBuilder, Client, ButtonStyle,ButtonBuilder, Events, GatewayIntentBits, BaseGuildVoiceChannel, ActionRowBuilder, StringSelectMenuBuilder, InteractionType, Embed, NewsChannel, CategoryChannel } from 'discord.js';
 import config from './config.json' with { type: "json" };
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
 const CLIENT_ID = 'YourID'
