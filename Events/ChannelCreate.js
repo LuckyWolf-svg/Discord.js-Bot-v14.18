@@ -13,7 +13,6 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
                 type: 2, });
             await newState.member.voice.setChannel(newChannel);
             userChannels[newState.member.user.id] = newChannel.id;
-            const textChannel = guild.channels.cache.get(newState.channelId);
         }
     }
 });}
