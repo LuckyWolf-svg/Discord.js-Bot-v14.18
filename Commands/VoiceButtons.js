@@ -50,43 +50,160 @@ export function registerVoiceButton(client) {
         if (interaction.customId === 'change_channel_name')
         {
             if (userChannel && userChannel.members.has(interaction.user.id)) {
-                await interaction.reply(`Введите новое название для канала \`${voiceChannel.name}\``);
+                await interaction.reply({content: `Введите новое название для канала \`${voiceChannel.name}\``, ephemeral: true});
                 const filter = m => m.author.id === member.id;
                 const messageCollector = interaction.channel.createMessageCollector({ filter, max: 1, time: 15000 });
                 messageCollector.on('collect', async m => {
+                    if (m.content.length > 1 || m.content.length < 100) {
                     try {
                         await voiceChannel.setName(m.content);
-                        await interaction.followUp(`Название канала изменено на \`${m.content}\``); }
-                    catch (error) {
-                        console.error(error);
-                        await interaction.followUp('Не удалось изменить название канала.'); }});
+                        await interaction.followUp({content: `Название канала изменено на \`${m.content}\``, ephemeral: true}); }
+                    catch{}}
+                });
                 messageCollector.on('end', collected => {
+                    try 
+                    {
                     if (collected.size === 0) {
-                        interaction.followUp('Время для ввода имени канала истекло.'); }});}
-                    else {
-                        await interaction.followUp("Вы не находитесь в голосовом канале."); }
+                        interaction.followUp({content: 'Время истекло.',ephemeral: true});
+                    }
+                    } catch {}
+                });}
         }
         else if (interaction.customId === 'change_user_limit')
         {
-            await interaction.reply(`Введите новый лимит пользователей для канала \`${voiceChannel.name}\``);
+            if (userChannel && userChannel.members.has(interaction.user.id))
+            {
+            await interaction.reply({content: `Введите новый лимит пользователей для канала \`${voiceChannel.name}\``, ephemeral: true});
             const filter = m => m.author.id === member.id;
             const messageCollector = interaction.channel.createMessageCollector({ filter, max: 1, time: 15000 });
             messageCollector.on('collect', async m => {
                 const newLimit = parseInt(m.content);
-                if (isNaN(newLimit) || newLimit < 0) {
-                    await interaction.followUp('Пожалуйста, введите корректное число для лимита пользователей.');
+                if (isNaN(newLimit) || newLimit < 0 || newLimit > 99) {
+                    await interaction.followUp({content: 'Пожалуйста, введите корректное число для лимита пользователей.', ephemeral: true});
                     return;}
-                try {
+                try
+                {
                     await voiceChannel.setUserLimit(newLimit);
-                    await interaction.followUp(`Лимит пользователей для канала изменен на \`${newLimit}\``);
-                } catch (error) {
-                    console.error(error);
-                    await interaction.followUp('Не удалось изменить лимит пользователей канала.');
-                }});
+                    await interaction.followUp({content:`Лимит пользователей для канала изменен на \`${newLimit}\``, ephemeral: true});
+                } 
+                catch {}
+            });
             messageCollector.on('end', collected => {
+                try 
+                {
                 if (collected.size === 0) {
-                    interaction.followUp('Время для ввода лимита пользователей истекло.');
-                }});
+                    interaction.followUp({content: 'Время истекло.', ephemeral: true});
+                }} catch {}
+                });}
+        }
+        else if (interaction.customId === 'change_crown')
+        { 
+            if (userChannel && userChannel.members.has(interaction.user.id))
+            {
+                await interaction.reply({ content: 'Введите ID пользователя, кому передать права', ephemeral: true });
+                const filter = m => m.author.id === interaction.user.id;
+                const messagecollector = interaction.channel.createMessageCollector({ filter, time: 15000 });
+                messagecollector.on('collect', async m => {
+                    try {
+                    const targetUserId = m.content;
+                    const targetMember = await interaction.guild.members.fetch(targetUserId).catch(() => null);
+                    const voiceChannel = targetMember.voice.channel;
+                    if (voiceChannel && targetMember.voice.channel == userChannel) {
+                        userChannels[userId] = null;
+                        userChannels[targetUserId] = userChannelId;
+                        await interaction.followUp({ content: `Права были переданы пользователю <@${targetUserId}>.`, ephemeral: true });
+                    }}
+                    catch {}
+                })
+                messagecollector.on('end', collected => {
+                    try 
+                    {
+                    if (collected.size === 0) {
+                        interaction.followUp({content: 'Время истекло.',ephemeral: true});
+                    }
+                    } catch {}
+                })
+            }
+        }
+        else if (interaction.customId === 'kickVoice')
+        {
+            if (userChannel && userChannel.members.has(interaction.user.id)) 
+            {
+                await interaction.reply({ content: 'Введите ID пользователя, кого кикнуть', ephemeral: true });
+                const filter = m => m.author.id === interaction.user.id;
+                const messagecollector = interaction.channel.createMessageCollector({ filter, time: 15000 });
+                messagecollector.on('collect', async m => {
+                    try{
+                    const targetUserId = m.content;
+                    const targetMember = await interaction.guild.members.fetch(targetUserId).catch(() => null);
+                    const voiceChannel = targetMember.voice.channel;
+                    if (voiceChannel && targetMember.voice.channel == userChannel) {
+                        await targetMember.voice.disconnect();
+                    }}
+                    catch {}
+                })
+                messagecollector.on('end', collected => {
+                    try 
+                    {
+                    if (collected.size === 0) {
+                        interaction.followUp({content: 'Время истекло.',ephemeral: true});
+                    }
+                    } catch {}
+                })
+            }
+        }
+        else if (interaction.customId === 'banVoice')
+        {
+            if (userChannel && userChannel.members.has(interaction.user.id)) {
+                await interaction.reply({ content: 'Введите ID пользователя, которому хотите запретить вход.', ephemeral: true });
+                const filter = m => m.author.id === interaction.user.id;
+                const collector = interaction.channel.createMessageCollector({ filter, time: 15000 });
+                collector.on('collect', async m => {
+                try {
+                    const userToDeny = m.content;
+                    const member = await interaction.guild.members.fetch(userToDeny).catch(() => null);
+                    if (member) {
+                            await userChannel.permissionOverwrites.edit(member, {
+                            Connect: false,
+                        });
+                        await interaction.followUp({ content: `Вход для пользователя <@${userToDeny}> был запрещен!`, ephemeral: true });
+
+                    }}
+                catch {}
+                collector.on('end', collected => {
+                    try 
+                    {
+                    if (collected.size === 0) {
+                        interaction.followUp({content: 'Время истекло.',ephemeral: true});
+                    }
+                    } catch {}
+                })});}
+        }
+        else if (interaction.customId === 'UnbanVoice')
+        {
+            if (userChannel && userChannel.members.has(interaction.user.id)) {
+            await interaction.reply({ content: 'Введите ID пользователя, которому хотите разрешить вход.', ephemeral: true });
+            const filter = m => m.author.id === interaction.user.id;
+            const collector = interaction.channel.createMessageCollector({ filter, time: 15000 });
+            collector.on('collect', async m => {
+                try {
+                const userToDeny = m.content;
+                const member = await interaction.guild.members.fetch(userToDeny).catch(() => null);
+                if (member) {
+                    await userChannel.permissionOverwrites.edit(member, {
+                        Connect: true,
+                    });
+                    await interaction.followUp({ content: `Вход для пользователя <@${userToDeny}> был разрешён!`, ephemeral: true });
+                }} 
+                catch {}
+            collector.on('end', collected => {
+                try 
+                {
+                if (collected.size === 0) {
+                    interaction.followUp({content: 'Время истекло.', ephemeral: true});
+                }
+                } catch {}
+            })});}
         }
     });
 }
