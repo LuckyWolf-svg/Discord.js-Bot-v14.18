@@ -7,8 +7,8 @@ export function registerVoiceButton(client) {
         if (message.author.bot) return;
         if (message.content === '!VoiceSetting' /*&& message.author === '660368954438582292'*/) {
             const member = message.member;
+            //you can join to channel for creating channels, run bot and use command
             if (member.voice.channel) {
-                const voiceChannel = member.voice.channel;
                 const targetTextChannel = message.guild.channels.cache.find(channel => channel.id === 'ChannelToJoinForCreate');
                 if (targetTextChannel) {
                     const buttonname = new ButtonBuilder()
@@ -31,12 +31,17 @@ export function registerVoiceButton(client) {
                         .setCustomId('banVoice')
                         .setLabel('Запретить вход')
                         .setStyle(ButtonStyle.Primary);
-                    const row = new ActionRowBuilder().addComponents(buttonname,buttonlimit,buttonCrown,buttonKick,buttonBan);
+                    const buttonUnBan = new ButtonBuilder()
+                        .setCustomId('UnbanVoice')
+                        .setLabel('Разрешить вход')
+                        .setStyle(ButtonStyle.Primary);
+                    const row1 = new ActionRowBuilder().addComponents(buttonname, buttonlimit, buttonCrown);
+                    const row2 = new ActionRowBuilder().addComponents(buttonKick, buttonBan, buttonUnBan);
                     await targetTextChannel.send({
-                        content: `Вы находитесь в голосовом канале ${voiceChannel.name}. Нажмите на кнопку для изменения его названия.`,
-                        components: [row] });
-                } else { await message.channel.send("Не удалось найти текстовый канал."); }
-            } else { await message.channel.send("Вы не находитесь в голосовом канале");}
+                        content: `Text`,
+                        components: [row1, row2] });
+                } else { await message.channel.send("Не удалось найти канал."); }
+            } else { await message.channel.send("Вы не находитесь в голосовом канале1");}
         }
     });
     
