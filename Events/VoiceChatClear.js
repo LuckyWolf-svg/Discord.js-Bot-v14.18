@@ -2,11 +2,11 @@ import { REST, Routes, EmbedBuilder, Client, Events, GatewayIntentBits, ActionRo
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 export function registerVoiceChatClear(client) {
-    const messageQueue = new Set(); // Храним сообщения для удаления
-    const channelId = '1226780571473149962'; // ID текстового канала, из которого нужно удалять сообщения 
+    const messageQueue = new Set();
+    const channelId = 'ChannelWhereNeedDeleteText';
     
     client.on('messageCreate', message => {
-        if (message.channel.id === channelId && message.author.id != '927241893245489312') {
+        if (message.channel.id === channelId && message.author.id != 'BotID') {
             messageQueue.add(message);
         }
     });
